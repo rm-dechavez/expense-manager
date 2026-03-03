@@ -1,30 +1,34 @@
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
+from src.expense.models import TransactionType, Category, PaymentMethod
 
 
-class Expense(BaseModel):
-    id: int
+class ExpenseBase(BaseModel):
+    description: str
     amount: float
-    type: str
-    category: str
-    payment_method: str
-    date: str
-    description: Optional[str] = None
+    transaction_type: TransactionType
+    category: Category
+    payment_method: PaymentMethod
 
 
-class ExpenseCreate(BaseModel):
-    amount: float
-    type: str
-    category: str
-    payment_method: str
-    date: str
-    description: Optional[str] = None
+class ExpenseCreate(ExpenseBase):
+    pass
 
 
 class ExpenseUpdate(BaseModel):
-    amount: Optional[float] = None
-    type: Optional[str] = None
-    category: Optional[str] = None
-    payment_method: Optional[str] = None
-    date: Optional[str] = None
     description: Optional[str] = None
+    amount: Optional[float] = None
+    transaction_type: Optional[TransactionType] = None
+    category: Optional[Category] = None
+    payment_method: Optional[PaymentMethod] = None
+
+
+class Expense(ExpenseBase):
+    id: str
+    sequence: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
